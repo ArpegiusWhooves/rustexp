@@ -53,9 +53,9 @@ fn main() {
     });
 
     subject_input.add_event_listener({
-        let pattern_input = pattern_input.clone();
+        let pattern_input = pattern_input;
         let subject_input = subject_input.clone();
-        let output_pre = output_pre.clone();
+        let output_pre = output_pre;
 
         move |_event: InputEvent| {
             run_regex(
@@ -75,7 +75,7 @@ fn run_regex(pattern_input: TextAreaElement, subject_input: TextAreaElement, out
 
     // We don't want to do anything if there is no pattern.
     // It will match anything
-    if pattern == String::from("") {
+    if pattern.is_empty() {
         output_pre.set_text_content("");
         return;
     }
@@ -98,16 +98,19 @@ fn format_captures(regex: regex::Regex, subject: &str) -> String {
     let mut buffer = String::new();
 
     for captures in regex.captures_iter(subject) {
-        write!(&mut buffer, "Some(Captures({{\n").unwrap();
+        writeln!(&mut buffer, "Some(Captures({{").unwrap();
 
         for (i, cap) in captures.iter().enumerate() {
-            write!(&mut buffer, "    {}: Some({:?}),\n", i, cap.unwrap().as_str()).unwrap();
+            match cap {
+                Some(_) => {writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.unwrap().as_str()).unwrap();},
+                None => {writeln!(&mut buffer, "None").unwrap();}
+            }
         }
 
-        write!(&mut buffer, "}})),\n").unwrap();
+        writeln!(&mut buffer, "}})),").unwrap();
     }
 
-    if buffer == "" {
+    if buffer.is_empty() {
         String::from("None")
     } else {
         buffer

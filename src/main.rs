@@ -102,8 +102,8 @@ fn format_captures(regex: regex::Regex, subject: &str) -> String {
 
         for (i, cap) in captures.iter().enumerate() {
             match cap {
-                Some(_) => {writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.unwrap().as_str()).unwrap();},
-                None => {writeln!(&mut buffer, "None").unwrap();}
+                Some(_) => writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.unwrap().as_str()).unwrap(),
+                None => writeln!(&mut buffer, "    {}: None,", i).unwrap()
             }
         }
 
